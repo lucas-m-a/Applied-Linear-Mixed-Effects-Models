@@ -4,16 +4,6 @@ author: "Lucas Alderfer"
 bibliography: citations.bib
 ---
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-install.packages("tidyverse")
-install.packages("readr")
-```
+[22 page](22.qmd)
 
-```{r}
-library(tidyverse)
-library(readr)
-```
 
-```{r}
-analysis1 <- read_csv("G:/.shortcut-targets-by-id/1tq5G_UrV2_qbv2NCEdtjrFOH7Vjyuz0H/JHS data/analysis1.csv")
-```

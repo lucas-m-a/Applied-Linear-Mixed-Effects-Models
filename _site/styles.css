@@ -1,0 +1,110 @@
+/* css styles */
+/*-- scss:rules --*/
+$ppuff4:   #8B7765;
+$weet:        #F5DEB3;
+$lemonchiff:  #FFFACD;
+$thissle4:  #8B7B8B;
+$thissle:       #D8BFD8;
+$thissle1: #FFE1FF;
+$bg:              #FAEBD7;
+$text:            #8B4C39;
+$text-muted:      #5f5e5a;
+
+html, body {
+  background-color: $thissle !important;
+  color: $text !important;
+}
+
+body, p, li, td, th {
+  color: $text;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $ppuff4;
+  font-weight: 700;
+}
+
+a, a:visited {
+  color: $weet;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: $thissle1;
+}
+
+code, pre {
+  color: $ppuff4;
+  background: rgba($ppuff4, 0.05);
+}
+
+/* ---------- Homepage layout ---------- */
+
+.bio-card,
+.readings,
+.courses-list,
+#refs {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 6px 16px rgba($ppuff4, 0.12);
+}
+
+.bio-card {
+  h3 {
+    margin: 0.25rem 0 0.1rem;
+    color: $ppuff4;
+  }
+  i {
+    margin-right: 0.75rem;
+    color: $weet;
+    font-size: 1.1rem;
+  }
+}
+
+.readings,
+.courses-list {
+  h4 {
+    margin-top: 0;
+    font-size: 1rem;
+    color: $thissle4;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  li {
+    border-top: 1px solid rgba($text, 0.1);
+    padding: 0.5rem 0;
+  }
+  li:last-child {
+    border-bottom: 1px solid rgba($text, 0.1);
+  }
+}
+
+/* ---------- References ---------- */
+
+section#refs {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  padding: 1.5rem 2rem !important;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 16px rgba($ppuff4, 0.12);
+  overflow: hidden !important;
+}
+
+/* Space and properly indent each reference */
+section#refs .csl-entry {
+  margin-bottom: 1.25rem;
+  padding-left: 2rem;
+  text-indent: -2rem;
+  line-height: 1.5;
+}
+
+/* No extra space after the last reference */
+section#refs .csl-entry:last-child {
+  margin-bottom: 0;
+}

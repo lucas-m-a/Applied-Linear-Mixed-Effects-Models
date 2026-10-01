@@ -1,0 +1,331 @@
+---
+title: "Applied Linear Mixed-Effects Models"
+subtitle: "Does systolic blood pressure change over time and does sex affect that roc"
+editor: source
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#install.packages("tidyverse")
+#install.packages("readr")
+#install.packages("lattice")
+#install.packages("knitr")
+#install.packages("psych")
+#install.packages("nlme")
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(readr)
+library(lattice)
+library(knitr)
+library(dplyr)
+library(psych)
+library(nlme)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+analysis1 <- read_csv("G:/.shortcut-targets-by-id/1tq5G_UrV2_qbv2NCEdtjrFOH7Vjyuz0H/JHS data/analysis1.csv")
+analysis2 <- read_csv("G:/.shortcut-targets-by-id/1tq5G_UrV2_qbv2NCEdtjrFOH7Vjyuz0H/JHS data/analysis2.csv")
+analysis3 <- read_csv("G:/.shortcut-targets-by-id/1tq5G_UrV2_qbv2NCEdtjrFOH7Vjyuz0H/JHS data/analysis3.csv")
+```
+
+```{r}
+#fixing diab3cat
+
+#diab3cat 0 non, 1 pre, 2 diabetic
+diab_levels <- c(
+  "Non-Diabetic",
+  "Pre-Diabetic",
+  "Diabetic"
+)
+
+analysis1$diab3cat <- factor(
+  analysis1$diab3cat,
+  levels = diab_levels
+)
+
+analysis2$diab3cat <- factor(
+  analysis2$diab3cat,
+  levels = 0:2,
+  labels = diab_levels
+)
+
+analysis3$diab3cat <- factor(
+  analysis3$diab3cat,
+  levels = 0:2,
+  labels = diab_levels
+)
+
+unique(analysis1$diab3cat)
+unique(analysis2$diab3cat)
+unique(analysis3$diab3cat)
+```
+
+```{r}
+#fixing DialysisEver
+names(analysis2)[names(analysis2) == "dialysisEver"] <- "DialysisEver"
+
+analysis1$DialysisEver <- factor(
+  analysis1$DialysisEver,
+  levels = c("No", "Yes")
+)
+
+analysis2$DialysisEver <- factor(
+  analysis2$DialysisEver,
+  levels = c(0, 1),
+  labels = c("No", "Yes")
+)
+
+analysis3$DialysisEver <- factor(
+  analysis3$DialysisEver,
+  levels = c(0, 1),
+  labels = c("No", "Yes")
+)
+
+unique(analysis1$DialysisEver)
+unique(analysis2$DialysisEver)
+unique(analysis3$DialysisEver)
+```
+
+```{r}
+longway <- bind_rows(analysis1, analysis2, analysis3)
+head(longway)
+```
+
+```{r}
+#checking longway
+longway %>%
+  group_by(subjid) %>%
+  summarise(
+    n_visits = n_distinct(visit),
+    .groups = "drop"
+  ) %>%
+  count(n_visits)
+
+longway %>%
+  count(subjid, visit) %>%
+  filter(n > 1)
+
+longway %>%
+  select(subjid, visit, VisitDate, DaysFromV1, YearsFromV1) %>%
+  arrange(subjid, visit) %>%
+  head(20)
+```
+
+```{r}
+barkbark <- unique(c(names(analysis1), names(analysis2),names(analysis3)))
+
+barkmeow <- data.frame(variable = barkbark,
+                       analysis1 = barkbark %in% names(analysis1),
+                       analysis2 = barkbark %in% names(analysis2),
+                       analysis3 = barkbark %in% names(analysis3)
+                )
+kable(head(barkmeow))
+
+#in all 3
+commons <- Reduce(intersect, list(names(analysis1), names(analysis2), names(analysis3)))
+kable(commons)
+
+#only in 1
+kable(setdiff(names(analysis1), union(names(analysis2), names(analysis3))))
+
+#only in 2
+kable(setdiff(names(analysis2), union(names(analysis1), names(analysis3))))
+
+#only in 3
+kable(setdiff(names(analysis3), union(names(analysis1), names(analysis2))))
+
+#structure subj id -> a1 a2 a3
+```
+
+```{r}
+longway_com <- longway[, commons]
+longway_com <- arrange(longway_com, subjid)
+```
+
+```{r}
+#R3.1 p 40
+xy1 <-xyplot(sbp ~ YearsFromV1,
+       groups = subjid,
+       data = longway_com,
+       type = "l",
+       lty = 1)
+xy1
+
+xy2 <-xyplot(sbp ~ YearsFromV1 | Diabetes,
+       groups = subjid,
+       data = longway_com,
+       type = "l",
+       lty = 1)
+xy2
+
+xy3 <-xyplot(sbp ~ YearsFromV1 | sex,
+       groups = subjid,
+       data = longway_com,
+       type = "l",
+       lty = 1)
+xy3
+```
+
+```{r}
+#R3.2
+#checking visit patterns
+visit_pattern <- longway_com %>%
+  group_by(subjid) %>%
+  summarise(visits = paste(sort(unique(visit)), collapse = "-"), .groups = "drop")
+
+table(visit_pattern$visits)
+```
+
+All 2653 subjects appeared at all 3 visits.
+
+```{r}
+#checking diabetes patterns
+diabetes_pattern <- longway_com %>%
+  arrange(subjid, visit) %>%
+  group_by(subjid) %>%
+  summarise(diabetes_pattern = paste(ifelse(is.na(Diabetes), "Missing", as.character(Diabetes)), collapse = "-"), .groups = "drop")
+
+diabetes_pattern %>% count(diabetes_pattern) %>% arrange(desc(n)) %>% kable()
+```
+
+The second visit appears to have the most missing recordings of diabetes status.
+
+```{r}
+#check sex
+table(longway_com$sex, useNA = "ifany")
+table(longway_com$visit, longway_com$sex, useNA = "ifany")
+```
+
+No changes in sex.
+
+```{r}
+#R3.3 p42
+#summary stats
+
+sbp_summary <- longway_com %>%
+  group_by(YearsFromV1, sex) %>%
+  summarise(n = sum(!is.na(sbp)),
+    mean_sbp = mean(sbp, na.rm = TRUE),
+    sd_sbp = sd(sbp, na.rm = TRUE),
+    median_sbp = median(sbp, na.rm = TRUE),
+    .groups = "drop")
+
+kable(sbp_summary)
+```
+
+```{r}
+#R3.4 p43
+bw1 <- bwplot(sbp ~ factor(visit) | sex, data = longway_com)
+bw1
+```
+
+
+```{r}
+#R3.5 number of patients by sex and missing-data pattern? p46
+longway_com %>%
+  filter(is.na(sbp)) %>%
+  select(subjid, visit, YearsFromV1, sex, sbp)
+```
+
+
+```{r}
+#fig3.4 47
+sbp_complete <- longway_com %>%
+  select(subjid, visit, sbp) %>%
+  tidyr::pivot_wider(
+    names_from = visit,
+    values_from = sbp,
+    names_prefix = "SBP_V"
+  ) %>%
+  drop_na()
+
+pairs.panels(
+  sbp_complete[, c("SBP_V1", "SBP_V2", "SBP_V3")],
+  method = "pearson",
+  hist.col = "thistle"
+)
+#uses pysch lib
+```
+
+
+```{r}
+#var cov mx R3.6 p48
+sbp_x <- sbp_complete[, c("SBP_V1", "SBP_V2", "SBP_V3")]
+(varx <- var(sbp_x, use = "complete.obs"))  #varcov mx
+
+print(cor(sbp_x, use = "complete.obs")) #correlation mx
+diag(varx) #diag of cov mx
+
+kable(cov2cor(varx)) #sam as cor() cor mx
+```
+
+
+```{r}
+#hypertension
+table(longway_com$HTN, useNA = "ifany")
+table(longway_com$visit,longway_com$HTN,useNA = "ifany")
+
+#did htn stay same
+longway_com %>%
+  group_by(subjid) %>%
+  summarise(n_HTN = n_distinct(HTN, na.rm = TRUE), .groups = "drop") %>%
+  count(n_HTN)
+
+baseline_htn <- longway_com %>%
+  filter(visit == 1) %>%
+  select(subjid, baseline_HTN = HTN)
+
+longway_htn <- longway_com %>%
+  left_join(baseline_htn, by = "subjid")
+
+table(longway_htn$baseline_HTN, useNA = "ifany")
+```
+
+```{r}
+#fig3.5 individual SBP means over the three visits separated by sex and baseline hypertension status
+sbp_means <- longway_htn %>%
+  group_by(visit, sex, baseline_HTN) %>%
+  summarise(
+    mean_sbp = mean(sbp, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+fig3.5 <- xyplot(
+  sbp ~ visit | baseline_HTN * sex,
+  data = longway_htn,
+  fun = mean,
+  type = "b",
+  xlab = "Visit",
+  ylab = "Mean Systolic Blood Pressure"
+)
+fig3.5
+
+#individual SBP measurements over the three visits separated by sex and baseline hypertension status
+fig3.5b <- xyplot(
+  sbp ~ visit | baseline_HTN * sex,
+  groups = subjid,
+  data = longway_htn,
+  type = "l",
+  lty = 1,
+  xlab = "Visit",
+  ylab = "Systolic Blood Pressure"
+)
+fig3.5b
+```
+
+
+### Chapter 5
+
+```{r}
+lm1 <- lm(sbp ~ YearsFromV1*sex, data = longway)
+summary(lm1)
+
+mflongway <- model.frame(lm1)
+
+gls1 <- gls(sbp ~ YearsFromV1*sex, data = mflongway)
+summary(gls1)
+
+
+head(model.matrix(lm1))
+```
