@@ -1512,67 +1512,69 @@ SBP_V3 0.4144435 0.4759167 1.0000000</code></pre>
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>longwaylong <span class="ot">&lt;-</span> longway[<span class="fu">complete.cases</span>(longway[, <span class="fu">c</span>(<span class="st">"sbp"</span>, <span class="st">"YearsFromV1"</span>, <span class="st">"sex"</span>, <span class="st">"HTN"</span>, <span class="st">"age"</span>, <span class="st">"BMI"</span>)]), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="chapters-5-and-6" class="level3">
 <h3 class="anchored" data-anchor-id="chapters-5-and-6">Chapters 5 and 6</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex, <span class="at">data =</span> longway)</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex, <span class="at">data =</span> longwaylong)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = sbp ~ YearsFromV1 * sex, data = longway)
+lm(formula = sbp ~ YearsFromV1 * sex, data = longwaylong)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--37.877 -12.069  -2.299   9.504  73.623 
+-37.842 -11.936  -2.126   9.464  73.714 
 
 Coefficients:
                      Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)         125.45593    0.39715 315.890   &lt;2e-16 ***
-YearsFromV1           0.23039    0.07416   3.107   0.0019 ** 
-sexMale               1.63607    0.65447   2.500   0.0124 *  
-YearsFromV1:sexMale  -0.13222    0.12285  -1.076   0.2818    
+(Intercept)         125.44626    0.39630 316.547  &lt; 2e-16 ***
+YearsFromV1           0.21001    0.07423   2.829  0.00468 ** 
+sexMale               1.64729    0.65279   2.523  0.01164 *  
+YearsFromV1:sexMale  -0.11645    0.12283  -0.948  0.34312    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 17.45 on 7946 degrees of freedom
-  (9 observations deleted due to missingness)
-Multiple R-squared:  0.002225,  Adjusted R-squared:  0.001848 
-F-statistic: 5.907 on 3 and 7946 DF,  p-value: 0.0005066</code></pre>
+Residual standard error: 17.38 on 7869 degrees of freedom
+Multiple R-squared:  0.002166,  Adjusted R-squared:  0.001786 
+F-statistic: 5.694 on 3 and 7869 DF,  p-value: 0.0006851</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>mflongway <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(lm1)</span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>gls1 <span class="ot">&lt;-</span> <span class="fu">gls</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex, <span class="at">data =</span> mflongway)</span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gls1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>mflongway <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(lm1)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>gls1 <span class="ot">&lt;-</span> <span class="fu">gls</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex, <span class="at">data =</span> mflongway)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gls1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generalized least squares fit by REML
   Model: sbp ~ YearsFromV1 * sex 
   Data: mflongway 
        AIC      BIC    logLik
-  68040.48 68075.39 -34015.24
+  67317.66 67352.51 -33653.83
 
 Coefficients:
-                        Value Std.Error   t-value p-value
-(Intercept)         125.45593 0.3971505 315.89011  0.0000
-YearsFromV1           0.23039 0.0741638   3.10653  0.0019
-sexMale               1.63607 0.6544722   2.49984  0.0124
-YearsFromV1:sexMale  -0.13222 0.1228544  -1.07626  0.2818
+                        Value Std.Error  t-value p-value
+(Intercept)         125.44626 0.3962955 316.5473  0.0000
+YearsFromV1           0.21001 0.0742284   2.8292  0.0047
+sexMale               1.64729 0.6527888   2.5235  0.0116
+YearsFromV1:sexMale  -0.11645 0.1228282  -0.9481  0.3431
 
  Correlation: 
                     (Intr) YrsFV1 sexMal
-YearsFromV1         -0.784              
-sexMale             -0.607  0.476       
-YearsFromV1:sexMale  0.473 -0.604 -0.785
+YearsFromV1         -0.782              
+sexMale             -0.607  0.475       
+YearsFromV1:sexMale  0.473 -0.604 -0.783
 
 Standardized residuals:
        Min         Q1        Med         Q3        Max 
--2.1703086 -0.6915146 -0.1317325  0.5445704  4.2184453 
+-2.1771067 -0.6866705 -0.1223307  0.5444611  4.2408591 
 
-Residual standard error: 17.45252 
-Degrees of freedom: 7950 total; 7946 residual</code></pre>
+Residual standard error: 17.38179 
+Degrees of freedom: 7873 total; 7869 residual</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">model.matrix</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">model.matrix</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  (Intercept) YearsFromV1 sexMale YearsFromV1:sexMale
 1           1           0       1                   0
@@ -1584,36 +1586,25 @@ Degrees of freedom: 7950 total; 7946 residual</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: sbp
                   Df  Sum Sq Mean Sq F value   Pr(&gt;F)   
-YearsFromV1        1    2872 2871.96  9.4289 0.002143 **
-sex                1    2173 2172.82  7.1336 0.007581 **
-YearsFromV1:sex    1     353  352.82  1.1583 0.281845   
-Residuals       7946 2420276  304.59                    
+YearsFromV1        1    2409 2408.96  7.9734 0.004759 **
+sex                1    2481 2480.70  8.2108 0.004175 **
+YearsFromV1:sex    1     272  271.57  0.8989 0.343116   
+Residuals       7869 2377433  302.13                    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ch6 p118</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(lm1), <span class="fu">resid</span>(lm1)) <span class="co">#Raw residuals for model lm1 residuals vs fitted values</span></span>
-<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">20</span>), <span class="at">col =</span> <span class="st">"grey"</span>)</span>
-<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">10</span>), <span class="at">col =</span> <span class="st">"grey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="22_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Raw residuals for model lm1 residuals vs fitted values, normal qq plot</span></span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">predict</span>(lm1), <span class="fu">resid</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ch6 p118</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(lm1), <span class="fu">resid</span>(lm1)) <span class="co">#Raw residuals for model lm1 residuals vs fitted values</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">20</span>), <span class="at">col =</span> <span class="st">"grey"</span>)</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">10</span>), <span class="at">col =</span> <span class="st">"grey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1621,12 +1612,103 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">resid</span>(lm1))</span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">resid</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Raw residuals for model lm1 residuals vs fitted values, normal qq plot</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">predict</span>(lm1), <span class="fu">resid</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="22_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="22_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">resid</span>(lm1))</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">resid</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="22_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex <span class="sc">+</span> HTN <span class="sc">+</span> age <span class="sc">+</span> BMI, <span class="at">data =</span> longwaylong)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sbp ~ YearsFromV1 * sex + HTN + age + BMI, data = longwaylong)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-46.465 -10.499  -1.064   9.282  73.921 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         103.83473    1.39693  74.331  &lt; 2e-16 ***
+YearsFromV1          -0.31436    0.06993  -4.495 7.05e-06 ***
+sexMale               2.77864    0.60588   4.586 4.59e-06 ***
+HTNYes               10.66936    0.41896  25.466  &lt; 2e-16 ***
+age                   0.27258    0.01694  16.087  &lt; 2e-16 ***
+BMI                   0.01787    0.02706   0.661    0.509    
+YearsFromV1:sexMale  -0.12400    0.11286  -1.099    0.272    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 15.97 on 7866 degrees of freedom
+Multiple R-squared:  0.158, Adjusted R-squared:  0.1573 
+F-statistic: 245.9 on 6 and 7866 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7873</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nobs</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7873</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm1, lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: sbp ~ YearsFromV1 * sex
+Model 2: sbp ~ YearsFromV1 * sex + HTN + age + BMI
+  Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+1   7869 2377433                                  
+2   7866 2006260  3    371174 485.09 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(lm2), <span class="fu">resid</span>(lm2)) <span class="co">#Raw residuals for model lm1 residuals vs fitted values</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">20</span>), <span class="at">col =</span> <span class="st">"grey"</span>)</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="at">by =</span> <span class="dv">10</span>), <span class="at">col =</span> <span class="st">"grey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="22_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">predict</span>(lm2), <span class="fu">resid</span>(lm2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="22_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">resid</span>(lm2))</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">resid</span>(lm2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="22_files/figure-html/unnamed-chunk-28-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
