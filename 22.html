@@ -142,7 +142,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#chapter-5" id="toc-chapter-5" class="nav-link active" data-scroll-target="#chapter-5">Chapter 5</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -173,7 +179,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lattice)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#fixing diab3cat</span></span>
@@ -1502,8 +1509,79 @@ SBP_V3 0.4144435 0.4759167 1.0000000</code></pre>
 </div>
 </div>
 </div>
+<section id="chapter-5" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-5">Chapter 5</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex, <span class="at">data =</span> longway)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = sbp ~ YearsFromV1 * sex, data = longway)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-37.877 -12.069  -2.299   9.504  73.623 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         125.45593    0.39715 315.890   &lt;2e-16 ***
+YearsFromV1           0.23039    0.07416   3.107   0.0019 ** 
+sexMale               1.63607    0.65447   2.500   0.0124 *  
+YearsFromV1:sexMale  -0.13222    0.12285  -1.076   0.2818    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 17.45 on 7946 degrees of freedom
+  (9 observations deleted due to missingness)
+Multiple R-squared:  0.002225,  Adjusted R-squared:  0.001848 
+F-statistic: 5.907 on 3 and 7946 DF,  p-value: 0.0005066</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>mflongway <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(lm1)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>gls1 <span class="ot">&lt;-</span> <span class="fu">gls</span>(sbp <span class="sc">~</span> YearsFromV1<span class="sc">*</span>sex, <span class="at">data =</span> mflongway)</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gls1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized least squares fit by REML
+  Model: sbp ~ YearsFromV1 * sex 
+  Data: mflongway 
+       AIC      BIC    logLik
+  68040.48 68075.39 -34015.24
+
+Coefficients:
+                        Value Std.Error   t-value p-value
+(Intercept)         125.45593 0.3971505 315.89011  0.0000
+YearsFromV1           0.23039 0.0741638   3.10653  0.0019
+sexMale               1.63607 0.6544722   2.49984  0.0124
+YearsFromV1:sexMale  -0.13222 0.1228544  -1.07626  0.2818
+
+ Correlation: 
+                    (Intr) YrsFV1 sexMal
+YearsFromV1         -0.784              
+sexMale             -0.607  0.476       
+YearsFromV1:sexMale  0.473 -0.604 -0.785
+
+Standardized residuals:
+       Min         Q1        Med         Q3        Max 
+-2.1703086 -0.6915146 -0.1317325  0.5445704  4.2184453 
+
+Residual standard error: 17.45252 
+Degrees of freedom: 7950 total; 7946 residual</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">model.matrix</span>(lm1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) YearsFromV1 sexMale YearsFromV1:sexMale
+1           1           0       1                   0
+2           1           0       0                   0
+3           1           0       0                   0
+4           1           0       0                   0
+5           1           0       0                   0
+6           1           0       1                   0</code></pre>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
